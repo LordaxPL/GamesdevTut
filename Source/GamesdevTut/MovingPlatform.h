@@ -20,6 +20,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float MovementSpeed = 20.0f;
+	float MovementSpeed = 20.0f;
+
+	UPROPERTY(EditAnywhere, meta = (MakeEditWidget))
+	FVector TargetLocation;
+
+	FVector Direction;
+	FVector GlobalStartLocation;
+	FVector GlobalTargetLocation;
 	
 };
