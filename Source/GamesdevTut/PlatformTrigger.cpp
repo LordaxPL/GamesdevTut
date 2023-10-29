@@ -3,6 +3,7 @@
 
 #include "PlatformTrigger.h"
 #include "Components/BoxComponent.h"
+#include "MovingPlatform.h"
 
 // Sets default values
 APlatformTrigger::APlatformTrigger()
@@ -19,8 +20,8 @@ APlatformTrigger::APlatformTrigger()
 void APlatformTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-	//TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &APlatformTrigger::OnOverlapBegin)
-	
+	TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &APlatformTrigger::OnOverlapBegin);
+	TriggerVolume->OnComponentEndOverlap.AddDynamic(this, &APlatformTrigger::OnOverlapEnd);
 }
 
 // Called every frame
@@ -30,7 +31,30 @@ void APlatformTrigger::Tick(float DeltaTime)
 
 }
 
-//void APlatformTrigger::OnOverlapBegin(UPrimitiveComponent OnComponentBeginOverlap, UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//
-//}
+void APlatformTrigger::OnOverlapBegin(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	for (int i = 0; i < PlatformsToTrigger.Num(); i++)
+	{
+		PlatformsToTrigger[i]->AddActiveTrigger();
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, FString::Printf(TEXT("%s has touched the platform trigger!"), *OtherActor->GetName()));
+}
+
+void APlatformTrigger::OnOverlapEnd(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
+{
+	for (int i = 0; i < PlatformsToTrigger.Num(); i++)
+	{
+		PlatformsToTrigger[i]->RemoveActiveTrigger();
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, FString::Printf(TEXT("%s has stopped touching the platform trigger!"), *OtherActor->GetName()));
+}

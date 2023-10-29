@@ -15,6 +15,10 @@ class GAMESDEVTUT_API AMovingPlatform : public AStaticMeshActor
 	GENERATED_BODY()
 public:
 	AMovingPlatform();
+
+	void AddActiveTrigger();
+	void RemoveActiveTrigger();
+
 protected:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
@@ -28,5 +32,8 @@ protected:
 	FVector Direction;
 	FVector GlobalStartLocation;
 	FVector GlobalTargetLocation;
+
+	UPROPERTY(EditAnywhere)
+		int ActiveTriggers = 1;
 	
 };
